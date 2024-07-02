@@ -1,10 +1,19 @@
 # mobile-stanza
 
+View variant data in TogoVar on your mobile device.
+
+Visit the following URL to access a page for a given variant ID like rs671.
+
+　　https://togovar-mobile.dbcls.jp/?id=rs671
+
+Scan the QR code below to view the same page.
+
+ ![0086174a0148d9cdfe73383aac7ca3e561bf598b](https://github.com/togovar/mobile-stanza/assets/1620798/dc4ed1b6-7078-4363-a1fe-43a9885a556f)
+
 All of the example expressions below indicate the rs671 variant.
 
 * dbSNP rsID Example: 
   * [rs671](https://togovar-mobile.dbcls.jp/?id=rs671)
-  * ![0086174a0148d9cdfe73383aac7ca3e561bf598b](https://github.com/togovar/mobile-stanza/assets/1620798/dc4ed1b6-7078-4363-a1fe-43a9885a556f)
 * HGVSg (GRCh38) Example: 
   * [NC_000012.12:g.111803962G>A](https://togovar-mobile.dbcls.jp/?id=NC_000012.12:g.111803962G>A)
   * [Chr12(GRCh38):g.111803962G>A](https://togovar-mobile.dbcls.jp/?id=Chr12(GRCh38):g.111803962G>A)
