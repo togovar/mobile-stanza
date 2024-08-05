@@ -1,0 +1,378 @@
+@use "@/assets/css/common";
+@use "@/assets/css/foundation/variables" as *;
+
+main {
+  --padding-inline: 0.8rem;
+  --padding-block: 0.8rem;
+  --transition: 0.4s;
+  background-color: #fff;
+
+  > ul {
+    padding: var(--padding-inline) var(--padding-block);
+    margin: 0;
+    list-style: none;
+
+    > li {
+      --color-dataset: #{$COLOR_DATASET_FOREIGN};
+
+      &[data-dataset="GEM-J WGA"] {
+        --color-dataset: #{$COLOR_DATASET_GEM_J};
+      }
+
+      &[data-dataset="JGA-NGS"],
+      &[data-dataset="JGA-SNP"] {
+        --color-dataset: #{$COLOR_DATASET_JGA};
+      }
+
+      &[data-dataset^="ToMMo"] {
+        --color-dataset: #{$COLOR_DATASET_TOMMO};
+      }
+
+      &[data-dataset="NCBN"] {
+        --color-dataset: #{$COLOR_DATASET_NCBN};
+      }
+
+      + li {
+        &.layer-none,
+        &.layer-total,
+        &.total-no-children {
+          padding-top: var(--padding-inline);
+          margin-top: var(--padding-inline);
+          border-top: solid 0.1rem #{$COLOR_SEPARATOR};
+        }
+      }
+
+      > h2 {
+        font-size: 1.5rem;
+        margin: -0.4rem 0 0.2rem;
+
+        &::before {
+          content: "\f20e";
+          font-family: "Material Symbols Sharp", sans-serif;
+          font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+          position: relative;
+          top: 0.2rem;
+          margin-right: 0.2em;
+          color: var(--color-dataset);
+        }
+      }
+
+      .dataset {
+        background-color: #fff;
+        border: solid 0.1rem #{$COLOR_SEPARATOR_SUB};
+
+        > div {
+          text-align: center;
+
+          .key {
+            font-size: 1rem;
+            color: #{$COLOR_DATASET_FOREIGN};
+          }
+
+          .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+          }
+        }
+
+        > .ethnic {
+          padding: 0.3rem 0.3rem 0.2rem;
+          font-size: 1.4rem;
+          border-bottom: solid 0.1rem #{$COLOR_SEPARATOR_SUB};
+          text-align: left;
+
+          &.sub-layer {
+            border: none;
+          }
+
+          &.layer-total,
+          &.sub-layer,
+          &.layer1-haschild,
+          &.layer1-nonchild,
+          &.layer2,
+          &.layer2-nonchild,
+          &.layer3 {
+            padding-left: 12px;
+          }
+
+          &.layer-total,
+          &.sub-layer,
+          &.layer1-haschild,
+          &.layer2 {
+            span {
+              margin-right: -3px;
+
+              &::before {
+                content: "";
+                position: relative;
+                display: inline-block;
+                right: 0.7rem;
+                top: 0.18rem;
+                width: 1.2rem;
+                height: 1.2rem;
+                -webkit-border-radius: 50%;
+                border-radius: 50%;
+                background: #{$COLOR_SEPARATOR_SUB};
+                margin-right: -0.3rem;
+              }
+
+              &::after {
+                content: "";
+                position: relative;
+                right: 1.1rem;
+                bottom: 0.05rem;
+                display: inline-block;
+                height: 0.7rem;
+                width: 0.4rem;
+                clip-path: polygon(0 0, 100% 50%, 0 100%);
+                background: #fff;
+              }
+            }
+          }
+        }
+
+        > .alt-count {
+          padding: 0.4rem 0;
+          border-top: solid 0.1rem #{$COLOR_SEPARATOR_SUB};
+          display: flex;
+          > .aac,
+          > .arc,
+          > .rrc,
+          > .hemi-alt,
+          > .hemi-ref {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+          }
+          .aac,
+          .hemi-alt {
+            > .value {
+              color: #{$COLOR_ALT};
+            }
+          }
+          .rrc,
+          .hemi-ref {
+            > .value {
+              color: #{$COLOR_REF};
+            }
+          }
+        }
+
+        > .allele-count {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          grid-template-areas: "cnt frq flt";
+
+          > .count,
+          > .frequency,
+          > .filter-status {
+            > .key {
+              margin: 0.3rem 0 -0.2rem;
+            }
+            > .value {
+              height: 4.6rem;
+              display: grid;
+              place-items: center;
+            }
+          }
+
+          > .count {
+            grid-area: cnt;
+            > .value {
+              > span {
+                > span {
+                  padding: 0 0.8rem;
+                  display: block;
+                  &:nth-child(1) {
+                    height: 2.1rem;
+                    color: #{$COLOR_ALT};
+                  }
+                  &:nth-child(2) {
+                    height: 1.4rem;
+                    font-size: 1rem;
+                    font-weight: normal;
+                    border-top: solid 0.1rem #{$COLOR_SEPARATOR};
+                  }
+                }
+              }
+            }
+          }
+
+          > .frequency {
+            grid-area: frq;
+            > .value {
+              > div:first-child {
+                height: 2rem;
+              }
+              >.indicator {
+                margin-top: -1.3rem;
+                width: 2rem;
+                height: 0.8rem;
+                position: relative;
+                border: solid 0.1rem var(--color-dataset);
+                &::before {
+                  content: "";
+                  position: absolute;
+                  top: 0.1rem;
+                  left: 0.1rem;
+                  width: 0.2rem;
+                  height: 0.6rem;
+                }
+                &[data-score="1"] {
+                  &::before {
+                    background-color: var(--color-dataset);
+                  }
+                }
+                &[data-score="2"] {
+                  &::before {
+                    background-color: var(--color-dataset);
+                    box-shadow: 0.3rem 0 0 var(--color-dataset);
+                  }
+                }
+                &[data-score="3"] {
+                  &::before {
+                    background-color: var(--color-dataset);
+                    box-shadow: 0.3rem 0 0 var(--color-dataset), 0.6rem 0 0 var(--color-dataset);
+                  }
+                }
+                &[data-score="4"] {
+                  &::before {
+                    background-color: var(--color-dataset);
+                    box-shadow: 0.3rem 0 0 var(--color-dataset), 0.6rem 0 0 var(--color-dataset), 0.9rem 0 0 var(--color-dataset);
+                  }
+                }
+                &[data-score="5"] {
+                  &::before {
+                    background-color: var(--color-dataset);
+                    box-shadow: 0.3rem 0 0 var(--color-dataset), 0.6rem 0 0 var(--color-dataset), 0.9rem 0 0 var(--color-dataset), 1.2rem 0 0 var(--color-dataset);
+                  }
+                }
+                &[data-score="6"] {
+                  &::before {
+                    background-color: var(--color-dataset);
+                    box-shadow: 0.3rem 0 0 var(--color-dataset), 0.6rem 0 0 var(--color-dataset), 0.9rem 0 0 var(--color-dataset), 1.2rem 0 0 var(--color-dataset), 1.5rem 0 0 var(--color-dataset);
+                  }
+                }
+              }
+            }
+          }
+
+          > .filter-status {
+            grid-area: flt;
+            overflow-wrap: anywhere;
+            > .value {
+              color: #{$COLOR_SIGN_DANGEROUS};
+              font-weight: normal;
+              font-size: 1.4rem;
+              line-height: 1.2;
+            }
+            &[data-filter="PASS"] {
+              > .value {
+                color: #{$COLOR_SIGN_SAFE};
+              }
+            }
+          }
+        }
+      }
+
+      .subset {
+        background-color: rgba(0, 0, 0, 0.05);
+        padding-left: 0.6rem;
+
+        li {
+          + li {
+            margin-top: 0.6rem;
+          }
+        }
+      }
+
+      &.open:has(> .subset) {
+        > .dataset {
+          > .ethnic {
+            > .arrow-icon {
+              &::after {
+                rotate: 90deg;
+                top: 0rem;
+                right: 1.2rem;
+              }
+            }
+          }
+        }
+
+        > .subset {
+          border: solid 0.01rem #ccc;
+          border-top: none;
+          padding-top: 0.6rem;
+
+          section.dataset {
+            border-right: none;
+          }
+
+          li.open {
+            > section.subset {
+              padding-top: 0.6rem;
+              padding-bottom: 0.6rem;
+            }
+          }
+
+          > li.layer1-haschild.open {
+            border-bottom: solid 0.01rem #ccc;
+            border-left: solid 0.01rem #ccc;
+            > section.dataset.layer1-haschild {
+              border-left: none;
+              > .ethnic {
+                .arrow-icon {
+                  &::after {
+                    rotate: 90deg;
+                    top: 0rem;
+                    right: 1.2rem;
+                  }
+                }
+              }
+            }
+          }
+
+          > li.sub-layer.open {
+            border-bottom: solid 0.01rem #ccc;
+            border-left: solid 0.01rem #ccc;
+            > section.dataset.sub-layer {
+              border-left: none;
+              > .ethnic {
+                > .arrow-icon {
+                  &::after {
+                    rotate: 90deg;
+                    top: 0rem;
+                    right: 1.2rem;
+                  }
+                }
+              }
+            }
+
+            > section.subset {
+              > li.layer2.open {
+                border-bottom: solid 0.01rem #ccc;
+                border-left: solid 0.01rem #ccc;
+                > section.dataset.layer2 {
+                  border-left: none;
+                  > .ethnic {
+                    .arrow-icon {
+                      &::after {
+                        rotate: 90deg;
+                        top: 0rem;
+                        right: 1.2rem;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          &:last-child {
+            padding-bottom: 0.6rem;
+          }
+        }
+      }
+    }
+  }
+}

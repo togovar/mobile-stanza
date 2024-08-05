@@ -1,0 +1,71 @@
+{{#with error}}
+  <div class="alert alert-danger">{{message}}</div>
+{{else}}
+  <ul>
+    {{#if result}}
+      {{#each result}}
+        <li class="list {{class_name}}" data-dataset="{{dataset}}">
+          <h2>{{dataset}}</h2>
+          <section class="dataset {{class_name}}">
+            <div class="ethnic {{class_name}}"><span class="arrow-icon"></span>{{label}}</div>
+            <div class="allele-count">
+              <div class="count">
+                <p class="key">Alt / Total</p>
+                <span class="value">
+                  <span>
+                    <span class="alt">{{ac}}</span>
+                    <span class="total">{{an}}</span>
+                  </span>
+              </div>
+              <div class="frequency">
+                <p class="key">Frequency</p>
+                <div class="value">
+                  <div>{{frequency}}</div>
+                    {{#if indicator}}
+                      <span
+                        class='indicator'
+                        data-score='{{indicator}}'
+                        data-dataset='{{dataset}}'
+                      ></span>
+                    {{/if}}
+                </div>
+              </div>
+              <div class="filter-status" data-filter="{{filter}}">
+                <p class="key">Filter status</p>
+                <div class="value filter">{{filter}}</div>
+              </div>
+            </div>
+            {{#if aac}}
+              <div class="alt-count">
+                <div class="aac">
+                  <span class="key">Alt / Alt</span>
+                  <span class="value">{{aac}}</span>
+                </div>
+                <div class="arc">
+                  <span class="key">Alt / Ref</span>
+                  <span class="value">{{arc}}</span>
+                </div>
+                <div class="rrc">
+                  <span class="key">Ref / Ref</span>
+                  <span class="value">{{rrc}}</span>
+                </div>
+              {{#if hemi_alt}}
+                <div class="hemi-alt">
+                  <span class="key">Hemi_Alt</span>
+                  <span class="value">{{hemi_alt}}</span>
+                </div>
+                <div class="hemi-ref">
+                  <span class="key">Hemi_Ref</span>
+                  <span class="value">{{hemi_ref}}</span>
+              </div>
+            {{/if}}
+              </div>
+            {{/if}}
+          </section>
+        </li>
+      {{/each}}
+    {{else}}
+      <p class="nodata-message">{{no_data_message}}</p>
+    {{/if}}
+  </ul>
+{{/with}}

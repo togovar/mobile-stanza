@@ -1,0 +1,33 @@
+{
+  "@context": {
+    "stanza": "http://togostanza.org/resource/stanza#"
+  },
+  "@id": "clinical-significance",
+  "stanza:label": "Clinical significance",
+  "stanza:definition": "Display clinical significance for mobile devices",
+  "stanza:type": "Stanza",
+  "stanza:display": "Table",
+  "stanza:provider": "Togovar",
+  "stanza:license": "MIT",
+  "stanza:author": "NAGANO Akio",
+  "stanza:address": "nagano@pence.com",
+  "stanza:contributor": [],
+  "stanza:created": "2024-05-27",
+  "stanza:updated": "2024-05-27",
+  "stanza:parameter": [
+    {
+      "stanza:key": "variant_id",
+      "stanza:example": "rs671",
+      "stanza:description": "Variant ID. dbSNP rsID, HGVSg, HGVSp and HGVSc",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "sparqlist",
+      "stanza:example": "https://togovar-mobile.dbcls.jp/sparqlist",
+      "stanza:description": "SPARQList URL",
+      "stanza:required": true
+    }
+  ],
+  "stanza:menu-placement": "bottom-right",
+  "stanza:style": []
+}
