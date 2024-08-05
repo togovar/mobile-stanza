@@ -1,0 +1,44 @@
+{
+  "@context": {
+    "stanza": "http://togostanza.org/resource/stanza#"
+  },
+  "@id": "frequency",
+  "stanza:label": "Frequency",
+  "stanza:definition": "Display frequency for mobile devices",
+  "stanza:type": "Stanza",
+  "stanza:display": "Table",
+  "stanza:provider": "Togovar",
+  "stanza:license": "MIT",
+  "stanza:author": "NAGANO Akio",
+  "stanza:address": "nagano@pence.com",
+  "stanza:contributor": [],
+  "stanza:created": "2024-05-27",
+  "stanza:updated": "2024-05-27",
+  "stanza:parameter": [
+    {
+      "stanza:key": "variant_id",
+      "stanza:example": "tgv66359566",
+      "stanza:description": "Variant ID. dbSNP rsID, HGVSg, HGVSp and HGVSc",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "assembly",
+      "stanza:example": "GRCh38",
+      "stanza:description": "assembly: \"GRCh37\" or \"GRCh38\"",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "data-url",
+      "stanza:example": "https://grch38.togovar.org",
+      "stanza:description": "URL",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "no_data_message",
+      "stanza:example": "No data found.",
+      "stanza:description": "Message displayed when there are zero data"
+    }
+  ],
+  "stanza:menu-placement": "bottom-right",
+  "stanza:style": []
+}

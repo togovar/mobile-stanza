@@ -1,0 +1,24 @@
+.within-sticky-table-header {
+  overflow: auto;
+  max-height: 300px;
+  .table {
+    > thead {
+      > tr {
+        > th {
+          position: sticky;
+          top: 0;
+          background-color: white;
+          z-index: 10;
+          &::before {
+            content: "";
+            width: 100%;
+            border-bottom: solid 1px black;
+            left: 0;
+            bottom: -1px;
+            position: absolute;
+          }
+        }
+      }
+    }
+  }
+}
