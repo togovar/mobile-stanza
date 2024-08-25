@@ -1,0 +1,31 @@
+{{#with error}}
+  <div class="alert alert-danger">{{message}}</div>
+{{else}}
+  {{#with result}}
+    {{#if results.length}}
+      <section id="title">
+        <h2><a href="{{togovar_uri}}">{{title}}</a></h2>
+      </section>
+      <section id="review">
+        <div class="status" data-status="{{review_status_stars}}">
+          <p class="key">Review status</p>
+          <div class="stars"></div>
+        </div>
+      </section>
+      <section id="clinical-significance">
+        <ul>
+          {{#each results}}
+            <li class="significance">
+              <h3><a href="{{clinvar}}">{{condition}}</a></h3>
+              <p data-significance="{{interpretation}}"><span
+                >{{interpretation}}</span></p>
+              <time>{{last_evaluated}}</time>
+            </li>
+          {{/each}}
+        </ul>
+      </section>
+    {{else}}
+      <p class="no-significance">No clinical significance found</p>
+    {{/if}}
+  {{/with}}
+{{/with}}

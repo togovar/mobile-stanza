@@ -1,0 +1,199 @@
+@use "@/assets/css/common";
+
+main {
+  --color-key: #62d5d9;
+  --color-key-dark1: #117f93;
+  --color-key-dark2: #0f6272;
+  --color-key-dark3: #125263;
+  --color-sign-safe: #04af58;
+  --color-sign-safe-light: #e7fef2;
+  --color-sign-normal: #9dcf3a;
+  --color-sign-normal-light: #f3f9e6;
+  --color-sign-warning: #ffae00;
+  --color-sign-warning-light: #fff7e6;
+  --color-sign-lowdangerous: #ff953c;
+  --color-sign-lowdangerous-light: #ffe3cb;
+  --color-sign-dangerous: #ff5a54;
+  --color-sign-dangerous-light: #ffeeed;
+  --color-sign-modifier: #c654ff;
+  --color-sign-modifier-light: #f9edff;
+  --color-sign-other: #9c8200;
+  --color-sign-other-light: #fff7cf;
+  --color-sign-unknown: #bbba7e;
+  --color-sign-unknown-light: #f9f9f3;
+  --color-separator: #0004;
+  --color-separator2: #0002;
+  --padding-inline: .8rem;
+  --padding-block: .8rem;
+  a {
+    color: var(--color-key-dark1);
+  }
+  > section {
+    + section {
+      border-top: solid .1rem var(--color-separator);
+    }
+    > h2 {
+      font-size: 1.5rem;
+      margin: var(--padding-block) var(--padding-inline);
+    }
+    p {
+      margin: 0;
+    }
+    p.key {
+      font-size: 1rem;
+      color: #0008;
+    }
+    &#review {
+      padding: var(--padding-block) var(--padding-inline);
+      > .status {
+        > .stars {
+          height: 1.8rem;
+          &::after {
+            content: "★";
+            font-size: 1.5rem;
+            color: #e6e6e6;
+            text-shadow: 1.7rem 0 0 #e6e6e6, 3.4rem 0 0 #e6e6e6, 5.1rem 0 0 #e6e6e6;
+          }
+        }
+        &[data-status="1"] {
+          > .stars::after {
+            color: var(--color-key);
+          }
+        }
+        &[data-status="2"] {
+          > .stars::after {
+            color: var(--color-key);
+            text-shadow: 1.7rem 0 0 var(--color-key), 3.4rem 0 0 #e6e6e6, 5.1rem 0 0 #e6e6e6;
+          }
+        }
+        &[data-status="3"] {
+          > .stars::after {
+            color: var(--color-key);
+            text-shadow: 1.7rem 0 0 var(--color-key), 3.4rem 0 0 var(--color-key), 5.1rem 0 0 #e6e6e6;
+          }
+        }
+        &[data-status="4"] {
+          > .stars::after {
+            color: var(--color-key);
+            text-shadow: 1.7rem 0 0 var(--color-key), 3.4rem 0 0 var(--color-key), 5.1rem 0 0 var(--color-key);
+          }
+        }
+      }
+    }
+    &#clinical-significance {
+      > ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        > li {
+          padding: var(--padding-block) var(--padding-inline);
+          &.significance {
+            display: grid;
+            grid-template-areas: "b c" "a a";
+            gap: .2rem;
+            + li.significance {
+              border-top: solid .1rem var(--color-separator2);
+            }
+            > h3 {
+              margin: 0;
+              grid-area: a;
+              font-size: 1.5rem;
+            }
+            > p, > time {
+              line-height: 1.4rem;
+            }
+            > p {
+              margin: 0;
+              grid-area: b;
+              > span {
+                display: inline-block;
+                padding: 0 .6em;
+                border-radius: 0.6lh;
+                border-width: .1rem;
+                border-style: solid;
+                margin-left: -.1rem;
+                font-weight: bold;
+                background-color: white;
+                color: #999;
+                border-color: #999;
+              }
+              &[data-significance="Pathogenic"],
+              &[data-significance="Likely pathogenic"] {
+                > span {
+                  background-color: var(--color-sign-dangerous-light);
+                  color: var(--color-sign-dangerous);
+                  border-color: var(--color-sign-dangerous);
+                }
+              }
+              &[data-significance="Pathogenic, Low penetrance"],
+              &[data-significance="Likely pathogenic, Low penetrance"] {
+                > span {
+                  background-color: var(--color-sign-lowdangerous-light);
+                  color: var(--color-sign-lowdangerous);
+                  border-color: var(--color-sign-lowdangerous);
+                }
+              }
+              &[data-significance="Established risk allele"],
+              &[data-significance="Likely risk allele"],
+              &[data-significance="Uncertain risk allele"] {
+                > span {
+                  background-color: var(--color-sign-warning-light);
+                  color: var(--color-sign-warning);
+                  border-color: var(--color-sign-warning);
+                }
+              }
+              &[data-significance="Uncertain significance"] {
+                > span {
+                  background-color: var(--color-sign-unknown-light);
+                  color: var(--color-sign-unknown);
+                  border-color: var(--color-sign-unknown);
+                }
+              }
+              &[data-significance="Likely benign"] {
+                > span {
+                  background-color: var(--color-sign-normal-light);
+                  color: var(--color-sign-normal);
+                  border-color: var(--color-sign-normal);
+                }
+              }
+              &[data-significance="Benign"] {
+                > span {
+                  background-color: var(--color-sign-safe-light);
+                  color: var(--color-sign-safe);
+                  border-color: var(--color-sign-safe);
+                }
+              }
+              &[data-significance="conflicting interpretations of pathogenicity"] {
+                > span {
+                  background-color: var(--color-sign-modifier-light);
+                  color: var(--color-sign-modifier);
+                  border-color: var(--color-sign-modifier);
+                }
+              }
+              &[data-significance="drug response"],
+              &[data-significance="confers sensitivity"],
+              &[data-significance="risk factor"],
+              &[data-significance="association"],
+              &[data-significance="protective"],
+              &[data-significance="affects"] {
+                > span {
+                  background-color: var(--color-sign-other-light);
+                  color: var(--color-sign-other);
+                  border-color: var(--color-sign-other);
+                }
+              }
+            }
+            > time {
+              font-size: 1.1rem;
+              grid-area: c;
+              text-align: right;
+            }
+          }
+          &.no-significance {
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}

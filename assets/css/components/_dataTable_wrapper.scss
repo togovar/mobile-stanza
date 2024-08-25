@@ -1,0 +1,183 @@
+@use 'assets/vendor/datatables/1.10.24/datatables.min.css';
+
+#dataTable_wrapper {
+  padding-top: 30px;
+  line-height: 1.2;
+
+  > #dataTable_info {
+    position: absolute;
+    font-size: 12px;
+    top: 6px;
+    left: 14px;
+    padding-top: 0;
+  }
+  > #dataTable_length {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    > label {
+      font-size: 12px;
+      margin: 0 4px 0 0;
+      > select {
+        padding: 0;
+      }
+    }
+  }
+  
+  > #dataTable {
+    width: auto !important;
+    border-collapse: collapse;
+    font-family: 'Roboto Condensed', sans-serif;
+    > thead {
+      padding-top: 2px;
+      > tr > th {
+        font-size: 12px;
+        color: #94928d;
+        font-weight: 500;
+        vertical-align: baseline;
+        text-align: left;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        padding-left: 14px;
+        border-bottom: 1px solid #444444;
+        white-space: nowrap;
+        &[aria-label="PMID"] {
+          width: 10% !important;
+        }
+        &[aria-label="Reference"] {
+          width: 80% !important;
+        }
+        &[aria-label="Date"] {
+          width: 5% !important;
+        }
+        &[aria-label="Cited by"] {
+          width: 5% !important;
+        }
+        &[data-label="Diseases"] {
+          width: 25% !important;
+        }
+        &.sorting_asc,
+        &.sorting_desc,
+        &.sorting {
+          background-size: 15px;
+          background-position: 100% 50%;
+        }
+      }
+      
+      &:first-child {
+        padding-left: 14px;
+      }
+      
+    }
+    
+    > tbody > tr > td {
+      padding: 6px 10px;
+      font-size: 14px;
+      color: #444444;
+      vertical-align: middle;
+      border-bottom: 1px solid #dee2e6;
+      &:first-of-type {
+        padding-left: 14px;
+        width: 10% !important;
+      }
+      &:nth-of-type(2) {
+        width: 80% !important;
+      }
+      &:nth-of-type(3) {
+        width: 5% !important;
+      }
+      &:nth-of-type(4) {
+        width: 5% !important;
+      }
+      &:last-of-type {
+        width: 25% !important;
+      }
+    }
+    
+  }
+  
+  > .dataTables_paginate {
+    padding: 10px;
+    float: unset;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    > span > .paginate_button {
+      padding: 1px 0 0 0;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+      &.current {
+        color: #ffffff !important;
+        background: none;
+        background-color: #249eb3;
+        border-radius: 50px;
+        border: none;
+        &:focus {
+          outline: none;
+        }
+      }
+      &:hover {
+        color: #ffffff !important;
+        background: none;
+        background-color: #249eb3;
+        border-radius: 50px;
+        border: none;
+      }
+    }
+    
+    > .paginate_button {
+      text-indent: 100vw;
+      white-space: nowrap;
+      overflow: hidden;
+      display: inline-block;
+      content: '';
+      width: 15px;
+      height: 15px;
+      background-repeat: no-repeat;
+      background-size: 6px;
+      padding: 0;
+      background-position: 2px 1px;
+      &:hover {
+        border: none;
+        width: 15px;
+        height: 15px;
+        background-size: 15px;
+        background-position: 0;
+      }
+      &.previous {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAATCAIAAAArl3v+AAAACXBIWXMAABYlAAAWJQFJUiTwAAAA4klEQVQokYXSMQ6DMAwAQJd2S3b2ZIdPIH8FsYJYkZitTLyChZ3MiFfAA5gj5lRVKkopoZ6c5GRZjsF6whgzDIN786KqqpIk6fveWvuAsyCicRxdwhgLfgkRaa1dHoZhHMdHtBeMsbquOefBhVBKSSkBIPgrPuhCvNG1AIB7FEVt227npmkO4lUJEYUQ27nrup+ZQMA5V0ptTmtNRAd0e30NwLIsaZqu6+puEbEsy6/G3WSVUoyx03qfOUkpfe5r4j737mkf8zwXRbH1l2XZyRbs6wkhENG7dNM05XlujLHWPgHUwcZGP2JpaQAAAABJRU5ErkJggg==");
+        &:hover {
+          background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAIAAAC0Ujn1AAAACXBIWXMAABYlAAAWJQFJUiTwAAACG0lEQVRIib2WsU/iUBzH372DJodQkjLQBIWQ3BGQwWOp0ZxjBxInFwcG7y9gdThGbnDlL9CB1ZWBUaOBhbuh1nCXGFQSGGxCIZgrnBgtKdjfe8/Gqt+pfd9vP/kl/b3fex8mkwmiqD0YVlvd6mVH1Xp9Y2yFApwnJQTlqCjHwhG/j/wxQmS0qunFmlLv3ADHLkkMFVbTKYEHDkDrxqjUaB6cXYAkSzvL8XwmwXNeKlo3RrnK6bmmMyg0JQW+nF2bp+NX4SKEzjU9VznVjZEd7ZJLpE/RpUbTIZfnvMSfZtFLjeYMrWq6w//Gc95ydq2cXWfQD84u1McqH9DFmgICBJncpMAHOE85uw4Dlkwgbg+GTvrX4pqvxTqrmnrnpj0Y4mqrC6xnuLvHvw//XIHUE1Vb3Y8Lm9vtwS2wXHERQv/+32FV64F1KvdnXXHCfWyNHp6fO2zu4d/rfcXpAOgbYwwWqdzdo18gxRIV7V5UtG3rb31e3Nv4ClIs4QDnodmQ/j0dBymyApwHp4Qg0SPSf0jprS9LIEVQSghiOSpCg0Hf+7bihC5HRSzHwmD9FehyLIwjfp8khoD1DL0gpUFkJkkMRfy+hw4prLJykN43xrnKCfBnMoHTs7FYU5yP7Ij/k0o/N3aW4yZ62tf5TCJJn+622hncpMDnMwnzGVu1zG/rl8l2qM92o0s6vCy81xXH0ptczObl5jqJELoHFl1AYBu29UEAAAAASUVORK5CYII=");
+        }
+      }
+      &.next {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAATCAIAAAArl3v+AAAACXBIWXMAABYlAAAWJQFJUiTwAAAA3UlEQVQokX3SMQ6DMAwFUDcdk5092eEArJCzwMoBkFhYIh+AI7Cwk5ljwMTEnAO4olRpKW3+ksh6ciQ7QM9M0+Scoz/Z0TiOWZbVdf2bEN3zPG/bFgDWdd22LU1TuIQlSRJF0VG21hpjLgaYEKJpGs55wDEAUEohYsCx4wg75m8Bxz66/nW3fVbnLMtSFIUvlWXJ4JJhGHxJSqm1/kbGGGutF4gohDg99yk4513XHXN+d/oSiOg38UJXoZQ6zSksAOAex3Hf9wGxd9JaSykDYg8ROeeqqprn+eePI6IH/fHDFR20o4MAAAAASUVORK5CYII=");
+        margin-left: 12px;
+        &:hover {
+          background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAIAAAC0Ujn1AAAACXBIWXMAABYlAAAWJQFJUiTwAAACMUlEQVRIib2Wv2/aQBSAr8ZxFApGMlWw5ASE1CAcFKUsRIn6Y/KA1AlV6sCQDp1ZM5SRJSt/QTKwZosYMkZKBAtZiBGqhFrVFVUVSz1cUGwSKmILE599PUqab7LuPX8+Pd+9uyej0Qh4oGj9ky8/Tr52ZfVXTx9OkoIMLXIhKcpLsYgQ8Lu/DIC7WlZhqdasd6+QiJMMHy5upUSORSKIGupGudE+vOwgmTh21+OFdIJlFjzVUDfy1fOWCjEWL5IcW8luT9upB/ECAFoqzFfPoW441XN6Xe2WutxoY7wixzrq6EVLheVG21bLKsT8N3FcxB1HHTEcXnbku1mO1aVa0zsTVLI7QYZG/xIGU0gpWh+/fkt168Pk9nr3StH6vo38x1PlJxK1kVWo/B5IUR4A8Gxp8c3K8nHn+/XNLZJ4DyHg9z19+17RBkhoXvv1za2Pzr7TsUkTe88wXgvLhHaoG9R038Fz0Owcff5mpvy17j19SCGDOPZOL8jts6lnYjb1/qsXuecr5jPaNJyzDjI0MujOh1Sc3BtkaErkQsi4C7m11U+ZFKH3rj2EKHO14smtre6/3CT3AgCkKE9JsQgyfo9/8I7VsQglBPwZPoyEbIqz1MEkw4eFgH+8QopbKSRqk6+e9fQhuXcitM7GUq2Jb9mKNiD07q7HTbW1rgvpRNLtwDeRVUjoTXJsIZ0wny01yyxUstsYO6F3euvbu3FOO9pSHuuKM+G/XMymmec6CQD4AzDtVR8kQhMvAAAAAElFTkSuQmCC");
+        }
+      }
+      
+      &:focus {
+        outline: none;
+      }
+      
+    }
+    
+  }
+  
+  caption {
+    caption-side: bottom;
+    text-align: left;
+    font-size: 12px;
+    font-weight: bold;
+    color: #6c757d;
+    padding: 8px 14px 0;
+  }
+  
+}
+
