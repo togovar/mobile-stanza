@@ -19,7 +19,8 @@ main {
         --color-dataset: #{$COLOR_DATASET_GEM_J};
       }
 
-      &[data-dataset="JGA-NGS"],
+      &[data-dataset="JGA-WGS"],
+      &[data-dataset="JGA-WES"],
       &[data-dataset="JGA-SNP"] {
         --color-dataset: #{$COLOR_DATASET_JGA};
       }
@@ -45,6 +46,7 @@ main {
       > h2 {
         font-size: 1.5rem;
         margin: -0.4rem 0 0.2rem;
+        padding-top: 10px;
 
         &::before {
           content: "\f20e";
@@ -81,24 +83,13 @@ main {
           border-bottom: solid 0.1rem #{$COLOR_SEPARATOR_SUB};
           text-align: left;
 
-          &.sub-layer {
+          &[data-dataset="JGA-SNP"][data-depth="1"] {
             border: none;
           }
 
-          &.layer-total,
-          &.sub-layer,
-          &.layer1-haschild,
-          &.layer1-nonchild,
-          &.layer2,
-          &.layer2-nonchild,
-          &.layer3 {
+          &[data-has-child="true"]{
             padding-left: 12px;
-          }
 
-          &.layer-total,
-          &.sub-layer,
-          &.layer1-haschild,
-          &.layer2 {
             span {
               margin-right: -3px;
 
@@ -315,10 +306,10 @@ main {
             }
           }
 
-          > li.layer1-haschild.open {
+          > li[data-depth="1"].open {
             border-bottom: solid 0.01rem #ccc;
             border-left: solid 0.01rem #ccc;
-            > section.dataset.layer1-haschild {
+            > section.dataset[data-depth="1"]{
               border-left: none;
               > .ethnic {
                 .arrow-icon {
@@ -332,10 +323,10 @@ main {
             }
           }
 
-          > li.sub-layer.open {
+          > li[data-dataset="JGA-SNP"][data-depth="1"].open {
             border-bottom: solid 0.01rem #ccc;
             border-left: solid 0.01rem #ccc;
-            > section.dataset.sub-layer {
+            > section.dataset[data-dataset="JGA-SNP"][data-depth="1"] {
               border-left: none;
               > .ethnic {
                 > .arrow-icon {
@@ -349,10 +340,10 @@ main {
             }
 
             > section.subset {
-              > li.layer2.open {
+              > li[data-depth="2"].open {
                 border-bottom: solid 0.01rem #ccc;
                 border-left: solid 0.01rem #ccc;
-                > section.dataset.layer2 {
+                > section.dataset[data-depth="2"] {
                   border-left: none;
                   > .ethnic {
                     .arrow-icon {

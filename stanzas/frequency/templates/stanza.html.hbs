@@ -4,10 +4,13 @@
   <ul>
     {{#if result}}
       {{#each result}}
-        <li class="list {{class_name}}" data-dataset="{{dataset}}">
+        <li class="list" data-dataset='{{dataset}}' data-depth='{{depth}}'>
           <h2>{{dataset}}</h2>
-          <section class="dataset {{class_name}}">
-            <div class="ethnic {{class_name}}"><span class="arrow-icon"></span>{{label}}</div>
+          <section class="dataset" data-dataset='{{dataset}}' data-depth='{{depth}}'>
+            <div class="ethnic" data-dataset="{{dataset}}" data-depth='{{depth}}' data-has-child='{{has_child}}'>
+              <span class="arrow-icon"></span>
+              {{label}}
+            </div>
             <div class="allele-count">
               <div class="count">
                 <p class="key">Alt / Total</p>

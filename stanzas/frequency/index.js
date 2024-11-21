@@ -1,25 +1,51 @@
 import Stanza from "togostanza/stanza";
+import { hierarchy } from 'd3-hierarchy';
 import { DATASETS } from "@/lib/constants";
-import { findTopParent, countParents, findParent, updateParentClass } from "@/lib/frequency";
+import { findTopParent, findParent, updateParentClass } from "@/lib/frequency";
 
 export default class MobileFrequency extends Stanza {
   async render() {
     // font: Roboto Condensed
-    this.importWebFontCSS(
-      "https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700,900"
-    );
+    this.importWebFontCSS("https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700,900");
     // database icon
-    this.importWebFontCSS(
-      "https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    );
+    this.importWebFontCSS("https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
 
     const { "data-url": urlBase, assembly, variant_id } = this.params;
     const dataURL = `${urlBase}/search?quality=0&term=${variant_id}&expand_dataset`
     let resultObject = [];
     let currentLayer1;
     let hasHemizygote = false;
+    let uniqueIdCounter = 0;
 
-    const datasets = Object.values(DATASETS);
+    function addIdsToDataNodes(dataNodes, currentDepth = 0) {
+      return dataNodes.map((node) => {
+        // 各ノードに一意のIDを設定
+        const newNode = {
+          ...node,
+          id: `${uniqueIdCounter++}`,
+          depth: currentDepth
+        };
+
+        // 子ノードがある場合は再帰的に処理
+        if (newNode.children && newNode.children.length > 0) {
+          newNode.children = addIdsToDataNodes(newNode.children, currentDepth + 1);
+        }
+        return newNode;
+      });
+    }
+
+    function prepareData() {
+      const data = DATASETS
+      const dataWithIds = addIdsToDataNodes(data);
+      const hierarchyData = hierarchy({
+        id: '-1',
+        label: 'root',
+        value: '',
+        children: dataWithIds,
+      });
+      return hierarchyData;
+    }
+    const preparedDatasets = Object.values(prepareData().data.children);
 
     try {
       const response = await fetch(dataURL, {
@@ -37,13 +63,12 @@ export default class MobileFrequency extends Stanza {
       const frequenciesDatasets = responseDatasets.data[0]?.frequencies;
 
       const searchData = (datum, depth = 0) => {
-        const frequencyData = frequenciesDatasets?.find(
-          (x) => x.source === datum.value
-        );
+        const frequencyData = frequenciesDatasets?.find((x) => x.source === datum.value);
         if (frequencyData) {
-          // 数値をロケール形式の文字列に変換する関数
-          const localeString = (v) =>
-            v !== undefined ? parseInt(v).toLocaleString() : null;
+          // ID
+          frequencyData.id = datum.id
+          // 深さ
+          frequencyData.depth = datum.depth;
 
           if (datum.value === "tommo") {
             switch (assembly) {
@@ -57,21 +82,20 @@ export default class MobileFrequency extends Stanza {
                 frequencyData.dataset = "ToMMo";
             }
           } else {
-            frequencyData.dataset = findTopParent(datasets, datum.id).label;
+            frequencyData.dataset = findTopParent(preparedDatasets, datum.id).label;
           }
 
-          if (["gem_j_wga", "jga_ngs", "tommo", "hgvd"].includes(datum.value)) {
+          // Population label
+          if (["gem_j_wga", "jga_wes", "tommo", "hgvd"].includes(datum.value)) {
             frequencyData.label = "Japanese";
-          } else if (
-            ["jga_snp", "ncbn", "gnomad_genomes", "gnomad_exomes"].includes(
-              datum.value
-            )
-          ) {
+          } else if (["jga_wgs", "jga_snp", "ncbn", "gnomad_genomes", "gnomad_exomes"].includes(datum.value)) {
             frequencyData.label = "Total";
           } else {
             frequencyData.label = datum.label;
           }
 
+          // 数値をロケール形式の文字列に変換する関数
+          const localeString = (v) => v !== undefined ? parseInt(v).toLocaleString() : null;
           // Alt
           frequencyData.ac = localeString(frequencyData.ac);
           // Total
@@ -83,83 +107,28 @@ export default class MobileFrequency extends Stanza {
           // Ref/Ref
           frequencyData.rrc = localeString(frequencyData.rrc);
 
+          if (!hasHemizygote && (frequencyData.hemi_alt || frequencyData.hemi_ref)) {
+            hasHemizygote = true;
+          }
+
           const frequency = parseFloat(frequencyData.af);
           frequencyData.frequency = parseFloat(frequency).toExponential(2);
           frequencyData.indicator = frequency < 0.0001 ? 1 : frequency < 0.001 ? 2 : frequency < 0.01 ? 3 : frequency < 0.05 ? 4 : frequency < 0.5 ? 5 : 6;
 
-          if (
-            !hasHemizygote &&
-            (frequencyData.hemi_alt || frequencyData.hemi_ref)
-          ) {
-            hasHemizygote = true;
-          }
-
-          // 開閉を行うtoggleを作成するため、クラスを設定
-          let className = "layer-none";
-          if (frequencyData.label === "Total") {
-            className = "layer-total";
-          } else if (frequencyData.dataset === "JGA-SNP") {
-            if (countParents(datasets, datum.id) === 2) {
-              className = "layer2";
-            } else {
-              className = "layer3";
-            }
-          } else if (frequencyData.dataset === "NCBN") {
-            if (frequencyData.source === "ncbn.jpn") {
-              className = "layer1-haschild";
-            }
-            if (countParents(datasets, datum.id) === 2) {
-              className = "layer2-nonchild";
-            }
-            if (
-              frequencyData.source !== "ncbn.jpn" &&
-              countParents(datasets, datum.id) !== 2
-            ) {
-              className = "layer1-nonchild";
-            }
-          } else if (
-            ![
-              "gem_j_wga",
-              "jga_ngs",
-              "jga_snp",
-              "tommo",
-              "ncbn",
-              "gnomad_genomes",
-              "gnomad_exomes",
-            ].includes(frequencyData.source)
-          ) {
-            className = "layer1-nonchild";
-          }
-          frequencyData.class_name = className;
-
           // JGA-SNPの場合 見出しのdataがないため追加
           if (frequencyData.dataset === "JGA-SNP") {
             if (currentLayer1 !== frequencyData.label) {
-              const parentCount = countParents(datasets, datum.id);
-              if (
-                parentCount === 2 &&
-                currentLayer1 !== findParent(datasets, datum.id).label
-              ) {
+              if (frequencyData.depth === 2 && currentLayer1 !== findParent(preparedDatasets, datum.id).label) {
                 let data = {
                   dataset: frequencyData.dataset,
-                  label: findParent(datasets, datum.id).label,
-                  class_name: "sub-layer",
+                  depth: 1,
+                  label: findParent(preparedDatasets, datum.id).label,
                   source: `${frequencyData.dataset}-title`,
+                  id: findParent(preparedDatasets, datum.id).id,
+                  has_child: true
                 };
                 resultObject = [...resultObject, data];
-                currentLayer1 = findParent(datasets, datum.id).label;
-              }
-            }
-
-            if (findParent(datasets, datum.id)?.label) {
-              if (countParents(datasets, datum.id) === 2) {
-                frequencyData.layer1 = findParent(datasets, datum.id).label;
-              } else {
-                frequencyData.layer1 = findParent(
-                  datasets,
-                  findParent(datasets, datum.id).id
-                ).label;
-                frequencyData.layer2 = findParent(datasets, datum.id).label;
+                currentLayer1 = findParent(preparedDatasets, datum.id).label;
               }
             }
           }
@@ -167,15 +136,18 @@ export default class MobileFrequency extends Stanza {
           resultObject = [...resultObject, frequencyData];
         }
 
+        // Recursively search children
         if (datum.children) {
-          datum.children.forEach((child) => searchData(child, depth + 1));
+          datum.children.forEach(searchData);
         }
       };
 
-      datasets.forEach(searchData);
+      preparedDatasets.forEach(searchData);
 
       // クラス名を更新
-      updateParentClass(datasets, resultObject);
+      updateParentClass(preparedDatasets, resultObject);
+
+      console.log(resultObject);
 
       this.renderTemplate({
         template: "stanza.html.hbs",
@@ -188,22 +160,13 @@ export default class MobileFrequency extends Stanza {
       // リスト要素の不要な部分を削除
       const lists = this.root.querySelectorAll("main > ul > li");
       lists.forEach((list) => {
-
-        // layer-none と layer-total と total-no-children 以外の要素から h2 要素を削除
-        if (
-          !(
-            list.className.includes("layer-none") ||
-            list.className.includes("layer-total") ||
-            list.className.includes("total-no-children")
-          )
-        ) {
+        // depth0 以外の要素から h2 要素を削除
+        if (list.dataset.depth !== "0") {
           list.querySelector("h2").remove();
 
-          // sub-layer要素から count, frequency, filter-status 要素を削除
-          if (list.className.includes("sub-layer")) {
-            list.querySelector(".count").remove();
-            list.querySelector(".frequency").remove();
-            list.querySelector(".filter-status").remove();
+          // datasetがJGA-SNPかつdepthが1のとき allele-count 要素を削除
+          if (list.dataset.dataset === "JGA-SNP" && list.dataset.depth === "1") {
+            list.querySelector(".allele-count").remove();
           }
         }
       });
@@ -251,29 +214,29 @@ export default class MobileFrequency extends Stanza {
      * @param {HTMLElement[]} items - 処理するネストされたアイテムの配列。 */
     const processNestedItems = (items) => {
       let currentTotalItem = null;
-      let layer1Items = [];
-      let layer2Items = [];
-      let layer3Items = [];
+      let depth1Items = [];
+      let depth2Items = [];
+      let depth3Items = [];
       let subLayerItems = [];
 
       const appendLayer3ToLayer2 = () => {
-        if (layer3Items.length > 0) {
-          appendSubset(layer2Items.at(-1), layer3Items);
-          layer3Items = [];
+        if (depth3Items.length > 0) {
+          appendSubset(depth2Items.at(-1), depth3Items);
+          depth3Items = [];
         }
       };
 
       const appendLayer2ToLayer1 = () => {
-        if (layer2Items.length > 0) {
-          appendSubset(layer1Items.at(-1), layer2Items);
-          layer2Items = [];
+        if (depth2Items.length > 0) {
+          appendSubset(depth1Items.at(-1), depth2Items);
+          depth2Items = [];
         }
       };
 
       const appendLayer2ToSubLayer = () => {
-        if (layer2Items.length > 0) {
-          appendSubset(subLayerItems.at(-1), layer2Items);
-          layer2Items = [];
+        if (depth2Items.length > 0) {
+          appendSubset(subLayerItems.at(-1), depth2Items);
+          depth2Items = [];
         }
       };
 
@@ -285,14 +248,14 @@ export default class MobileFrequency extends Stanza {
       };
 
       const appendLayer1ToTotal = () => {
-        if (layer1Items.length > 0 && currentTotalItem) {
-          appendSubset(currentTotalItem, layer1Items);
-          layer1Items = [];
+        if (depth1Items.length > 0 && currentTotalItem) {
+          appendSubset(currentTotalItem, depth1Items);
+          depth1Items = [];
         }
       };
 
       items.forEach((item) => {
-        if (item.classList.contains("layer-total")) {
+        if (item.dataset.depth === "0") {
           appendLayer3ToLayer2();
           if (subLayerItems.length > 0) {
             appendLayer2ToSubLayer();
@@ -303,28 +266,22 @@ export default class MobileFrequency extends Stanza {
           }
           currentTotalItem = item;
 
-        } else if (item.classList.contains("sub-layer")) {
+        } else if (item.dataset.dataset === "JGA-SNP" && item.dataset.depth === "1") {
           appendLayer3ToLayer2();
           appendLayer2ToSubLayer();
           subLayerItems.push(item);
 
-        } else if (
-          item.classList.contains("layer1-haschild") ||
-          item.classList.contains("layer1-nonchild")
-        ) {
+        } else if (item.dataset.depth === "1") {
           appendLayer3ToLayer2();
           appendLayer2ToLayer1();
-          layer1Items.push(item);
+          depth1Items.push(item);
 
-        } else if (
-          item.classList.contains("layer2") ||
-          item.classList.contains("layer2-nonchild")
-        ) {
+        } else if (item.dataset.depth === "2") {
           appendLayer3ToLayer2();
-          layer2Items.push(item);
+          depth2Items.push(item);
 
-        } else if (item.classList.contains("layer3")) {
-          layer3Items.push(item);
+        } else if (item.dataset.depth === "3") {
+          depth3Items.push(item);
         }
       });
 
