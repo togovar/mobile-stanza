@@ -21,6 +21,7 @@
     "lint:eslint": "eslint --ignore-path .gitignore"
   },
   "devDependencies": {
+    "d3-hierarchy": "^3.1.2",
     "eslint": "^8.13.0",
     "eslint-config-prettier": "^8.5.0",
     "normalize.css": "^8.0.1",
